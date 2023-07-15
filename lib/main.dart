@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:weather_app/providers/help_screen_provider.dart';
+
+import 'package:weather_app/router.dart';
 
 void main() {
-  runApp(const MyApp());
+  
+  runApp(const WeatherApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class WeatherApp extends StatelessWidget {
+  const WeatherApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-      
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const (title: 'Flutter Demo Home Page'),
+    
+    return ChangeNotifierProvider(
+      create:(context) => HelpScreenProvider(),
+      child: MaterialApp(
+          title: 'Weather App',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          onGenerateRoute: Routes.generateRoute,
+          initialRoute: '/help-screen',
+          ),
     );
   }
 }
-
