@@ -19,7 +19,7 @@ class Routes{
       case '/live-weather':
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) =>   LiveWeather(),
+        builder: (_) => const  LiveWeather(),
       );
     default:
       return MaterialPageRoute(

@@ -4,22 +4,21 @@ import 'package:weather_app/providers/weather_provider.dart';
 
 class LiveWeather extends StatefulWidget {
   static const routeName = '/live-weather';
+  const LiveWeather({super.key});
   @override
-  _LiveWeatherState createState() => _LiveWeatherState();
+ State<LiveWeather> createState()=> _LiveWeatherState();
 }
 
 class _LiveWeatherState extends State<LiveWeather> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-             
-             const SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Consumer<WeatherProvider>(
                 builder: (context, weatherProvider, _) {
                   final currentWeather = weatherProvider.currentWeather;
@@ -31,7 +30,6 @@ class _LiveWeatherState extends State<LiveWeather> {
                         Text('Temperature: ${currentWeather.current.tempC}°C'),
                         Text(
                             'Condition: ${currentWeather.current.condition.text}'),
-                        // Add more weather data fields as needed
                       ],
                     );
                   } else {

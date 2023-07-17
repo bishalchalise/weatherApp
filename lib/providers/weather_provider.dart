@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_app/models/weather.dart';
 import 'package:weather_app/services/weather_service.dart';
 
-// WeatherService code...
+
 
 class WeatherProvider with ChangeNotifier {
   Weather? _currentWeather;
@@ -18,7 +18,7 @@ class WeatherProvider with ChangeNotifier {
       _currentWeather = weather;
       notifyListeners();
     } catch (error) {
-      // Handle error
+    
       print('Error fetching weather data: $error');
     }
   }
@@ -29,7 +29,7 @@ class WeatherProvider with ChangeNotifier {
       _currentWeather = weather;
       notifyListeners();
     } catch (error) {
-      // Handle error
+    
       print('Error fetching weather data: $error');
     }
   }
