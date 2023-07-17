@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/features/help_screen/help_screen.dart';
 import 'package:weather_app/features/home_page_screen/home_page_screen.dart';
+import 'package:weather_app/features/weather/weather.dart';
 
 class Routes{
  static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
@@ -13,7 +14,12 @@ class Routes{
     case '/home-page-screen':
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const HomePageScreen(),
+        builder: (_) =>  const HomePageScreen(),
+      );
+      case '/live-weather':
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) =>   LiveWeather(),
       );
     default:
       return MaterialPageRoute(
