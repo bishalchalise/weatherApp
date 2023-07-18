@@ -5,16 +5,16 @@ import 'package:weather_app/common/fore_cast_card.dart';
 import 'package:weather_app/features/home_page_screen/home_page_screen.dart';
 import 'package:weather_app/providers/weather_provider.dart';
 
-class LiveWeather extends StatefulWidget {
-  static const routeName = '/live-weather';
+class TemperatureView extends StatefulWidget {
+  static const routeName = '/temperature-view';
 
-  const LiveWeather({super.key});
+  const TemperatureView({super.key});
 
   @override
-  State<LiveWeather> createState() => _LiveWeatherState();
+  State<TemperatureView> createState() => _TemperatureViewState();
 }
 
-class _LiveWeatherState extends State<LiveWeather> {
+class _TemperatureViewState extends State<TemperatureView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

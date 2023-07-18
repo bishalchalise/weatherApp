@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather_app/common/custom_button.dart';
 import 'package:weather_app/common/custom_text_field.dart';
 import 'package:weather_app/features/help_screen/help_screen.dart';
-import 'package:weather_app/features/weather/live_weather.dart';
+import 'package:weather_app/features/temperature_view/temperature_view.dart';
 import 'package:weather_app/providers/home_page_provider.dart';
 import 'package:weather_app/providers/weather_provider.dart';
 
@@ -57,7 +57,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           Provider.of<WeatherProvider>(context, listen: false);
       await weatherProvider.fetchCurrentWeatherByLocation(location);
 
-      await Navigator.pushNamed(context, LiveWeather.routeName);
+      await Navigator.pushNamed(context, TemperatureView.routeName);
     } else {
       final permission = await Geolocator.checkPermission();
 
@@ -118,7 +118,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           await weatherProvider.fetchCurrentWeatherByCoordinates(
               latitude, longitude);
 
-          await Navigator.pushNamed(context, LiveWeather.routeName);
+          await Navigator.pushNamed(context, TemperatureView.routeName);
         } catch (e) {
           showDialog(
             context: context,
