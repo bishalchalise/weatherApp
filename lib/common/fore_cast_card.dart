@@ -33,6 +33,7 @@ class ForeCastCard extends StatelessWidget {
           ),
           Image.network(
             'http:$icon',
+            
           ),
         ],
       ),

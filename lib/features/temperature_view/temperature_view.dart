@@ -110,7 +110,7 @@ class _TemperatureViewState extends State<TemperatureView> {
                     ),
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
                         width: double.infinity,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -198,10 +198,10 @@ class _TemperatureViewState extends State<TemperatureView> {
                                   final forecastTime =
                                       DateFormat.Hm().format(forecastHour.time);
                                   return Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(bottom: 8.0),
                                     child: ForeCastCard(
                                       forecastTime: forecastTime,
-                                      tempC: '${forecastHour.tempC}',
+                                      tempC: '${forecastHour.tempC.toInt()}',
                                       condition: forecastHour.condition.text,
                                       icon: forecastHour.condition.icon,
                                     ),
