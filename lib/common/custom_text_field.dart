@@ -18,44 +18,47 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-       
-        suffixIcon:  Padding(
-          padding: const EdgeInsets.only(right: 20.0),
-          child: icon,
-        ),
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: Colors.blueGrey,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: const BorderSide(
-            color: Colors.blueGrey,
-          ),
-          
-        ),
-        focusedBorder:  OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: const BorderSide(
-            color: Colors.black,
-          ),
-          
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
       ),
-      initialValue: initialValue,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Enter Your $hintText";
-        }
-        return null;
-      },
-      maxLines: maxLine,
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          suffixIcon: Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: icon,
+          ),
+          hintText: hintText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        initialValue: initialValue,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Enter Your $hintText";
+          }
+          return null;
+        },
+        maxLines: maxLine,
+      ),
     );
   }
 }

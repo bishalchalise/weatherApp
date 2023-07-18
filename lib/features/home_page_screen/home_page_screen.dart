@@ -1,22 +1,27 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather_app/common/custom_button.dart';
 import 'package:weather_app/common/custom_text_field.dart';
-import 'package:weather_app/features/weather/weather.dart';
+import 'package:weather_app/features/help_screen/help_screen.dart';
+import 'package:weather_app/features/weather/live_weather.dart';
 import 'package:weather_app/providers/home_page_provider.dart';
 import 'package:weather_app/providers/weather_provider.dart';
 
 class HomePageScreen extends StatefulWidget {
   static const routeName = '/home-page-screen';
-  const HomePageScreen({super.key});
+
+  const HomePageScreen({Key? key}) : super(key: key);
 
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-  TextEditingController _locationController = TextEditingController();
+  late TextEditingController _locationController;
   late SharedPreferences _prefs;
   bool isLocationEmpty = true;
 
@@ -24,7 +29,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   void initState() {
     super.initState();
     _locationController = TextEditingController();
-    _locationController.addListener(_onLocationChanged); // Add the listener
+    _locationController.addListener(_onLocationChanged);
     _initSharedPreferences();
   }
 
@@ -36,45 +41,56 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   Future<void> _initSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
-    String? savedLocation = _prefs.getString('location');
+    final savedLocation = _prefs.getString('location');
     if (savedLocation != null) {
       _locationController.text = savedLocation;
     }
   }
 
-  void _saveLocation() {
-    final String location = _locationController.text;
-    _prefs.setString('location', location);
-    if (location.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('Please enter a location.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
+  Future<void> _saveLocation() async {
+    final location = _locationController.text;
+
+    if (location.isNotEmpty) {
+      _prefs.setString('location', location);
+
       final weatherProvider =
           Provider.of<WeatherProvider>(context, listen: false);
-      weatherProvider.fetchCurrentWeatherByLocation(location).then((_) {
-        final currentWeather = weatherProvider.currentWeather;
-        if (currentWeather == null) {
+      await weatherProvider.fetchCurrentWeatherByLocation(location);
+
+      await Navigator.pushNamed(context, LiveWeather.routeName);
+    } else {
+      final permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.deniedForever) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Location Permission'),
+              content: const Text(
+                  'Please grant location permission in settings to fetch weather data automatically.',),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else if (permission == LocationPermission.denied) {
+        final requestedPermission = await Geolocator.requestPermission();
+
+        if (requestedPermission == LocationPermission.denied) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Error'),
-                content: const Text('Failed to fetch weather data.'),
+                title: const Text('Location Permission'),
+                content: const Text(
+                    'Please grant location permission to fetch weather data automatically.'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -86,10 +102,44 @@ class _HomePageScreenState extends State<HomePageScreen> {
               );
             },
           );
-        } else {
-          Navigator.pushNamed(context, LiveWeather.routeName);
+          return;
         }
-      });
+      }
+
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        try {
+          final position = await Geolocator.getCurrentPosition();
+          final latitude = position.latitude;
+          final longitude = position.longitude;
+
+          final weatherProvider =
+              Provider.of<WeatherProvider>(context, listen: false);
+          await weatherProvider.fetchCurrentWeatherByCoordinates(
+              latitude, longitude);
+
+          await Navigator.pushNamed(context, LiveWeather.routeName);
+        } catch (e) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Location Error'),
+                content: const Text(
+                    'Failed to retrieve current location. Please check your device settings.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
     }
   }
 
@@ -104,33 +154,45 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return ChangeNotifierProvider(
       create: (context) => HomePageScreenProvider(),
       child: Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Consumer<HomePageScreenProvider>(
+        appBar: AppBar(
+          backgroundColor: const Color(0xff7c4dff),
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, HelpScreen.routeName);
+            },
+            icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          ),
+        ),
+        body: Container(
+          color: const Color(0xff7c4dff),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _locationController,
                     builder: (context, value, child) {
-                  return CustomTextField(
-                    icon: const Icon(
-                      Icons.location_on_outlined,
-                      color: Colors.blueGrey,
-                    ),
-                    controller: _locationController,
-                    hintText: 'Enter Location',
-                    // initialValue: value.location,
-                  );
-                }),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomButton(
-                  onPressed: _saveLocation,
-                  text: isLocationEmpty ? 'Save' : 'Update',
-                  color: Colors.blueGrey,
-                ),
-              ],
+                      return CustomTextField(
+                        icon: const Icon(
+                          Icons.location_on_outlined,
+                          color: Color(0xff7c4dff),
+                        ),
+                        controller: _locationController,
+                        hintText: 'Enter Location',
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  CustomButton(
+                    onPressed: _saveLocation,
+                    text: isLocationEmpty ? 'Save' : 'Update',
+                    color: const Color(0xff00d659),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

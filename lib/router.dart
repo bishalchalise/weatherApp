@@ -1,35 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/features/help_screen/help_screen.dart';
 import 'package:weather_app/features/home_page_screen/home_page_screen.dart';
-import 'package:weather_app/features/weather/weather.dart';
+import 'package:weather_app/features/weather/live_weather.dart';
 
-class Routes{
- static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
-  switch (routeSettings.name) {
-    case '/help-screen':
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) =>  const HelpScreen(),
-      );
-    case '/home-page-screen':
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) =>  const HomePageScreen(),
-      );
+class Routes {
+  static Route<dynamic>? generateRoute(RouteSettings routeSettings) {
+    switch (routeSettings.name) {
+      case '/help-screen':
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const HelpScreen(),
+        );
+      case '/home-page-screen':
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const HomePageScreen(),
+        );
       case '/live-weather':
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) => const  LiveWeather(),
-      );
-    default:
-      return MaterialPageRoute(
-        settings: routeSettings,
-
-  
-        builder: (_) => const Scaffold(
-          body: Text("The screen doesn't exists"),
-        ),
-      );
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const LiveWeather(),
+        );
+      default:
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const Scaffold(
+            body: Text("The screen doesn't exists"),
+          ),
+        );
+    }
   }
-}
 }
